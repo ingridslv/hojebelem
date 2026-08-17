@@ -1,0 +1,1 @@
+import Link from "next/link"; export default function NotFound(){return <div className="shell empty-state page-space"><b>Evento não encontrado</b><p>Este evento pode ter sido removido ou ainda não foi publicado.</p><Link className="gradient-button" href="/eventos">Ver outros eventos</Link></div>}

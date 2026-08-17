@@ -1,0 +1,105 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+  ORGANIZER
+}
+
+enum EventStatusOverride {
+  CANCELLED
+  POSTPONED
+}
+
+model User {
+  id           String     @id @default(cuid())
+  name         String?
+  email        String     @unique
+  passwordHash String?
+  avatarUrl    String?
+  role         Role       @default(USER)
+  events       Event[]
+  wishlist     Wishlist[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model City {
+  id        String   @id @default(cuid())
+  name      String
+  state     String
+  slug      String   @unique
+  timezone  String
+  events    Event[]
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id        String          @id @default(cuid())
+  name      String
+  slug      String          @unique
+  icon      String
+  events    EventCategory[]
+  createdAt DateTime        @default(now())
+}
+
+model Event {
+  id                   String               @id @default(cuid())
+  slug                 String               @unique
+  title                String
+  description          String
+  coverImageUrl        String
+  teaserVideoUrl       String?
+  startAt              DateTime
+  endAt                DateTime?
+  venueName            String
+  address              String
+  latitude             Decimal?             @db.Decimal(10, 7)
+  longitude            Decimal?             @db.Decimal(10, 7)
+  price                Decimal?             @db.Decimal(10, 2)
+  externalPurchaseLink String
+  socialLink           String?
+  statusOverride       EventStatusOverride?
+  isFeatured           Boolean              @default(false)
+  isPublished          Boolean              @default(false)
+  cityId               String
+  city                 City                 @relation(fields: [cityId], references: [id])
+  createdById          String
+  createdBy            User                 @relation(fields: [createdById], references: [id])
+  categories           EventCategory[]
+  wishlistedBy         Wishlist[]
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+
+  @@index([startAt])
+  @@index([cityId, isPublished, startAt])
+  @@index([isPublished, isFeatured])
+}
+
+model EventCategory {
+  eventId    String
+  categoryId String
+  event      Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([eventId, categoryId])
+  @@index([categoryId])
+}
+
+model Wishlist {
+  userId    String
+  eventId   String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([userId, eventId])
+  @@index([eventId])
+}

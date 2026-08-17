@@ -1,0 +1,2 @@
+import { Search, SlidersHorizontal } from "lucide-react";
+export function SearchForm({defaultValue=""}:{defaultValue?:string}){return <form action="/eventos" className="search-form"><Search/><input name="q" defaultValue={defaultValue} aria-label="Pesquisar eventos" placeholder="Busque eventos, lugares ou categorias"/><button type="submit" aria-label="Pesquisar">Buscar</button><button type="button" className="filter-button" aria-label="Filtros avançados"><SlidersHorizontal/></button></form>}

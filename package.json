@@ -6,12 +6,27 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:seed": "tsx prisma/seed.ts"
   },
+  "prisma": { "seed": "tsx prisma/seed.ts" },
   "dependencies": {
+    "@prisma/client": "^6.19.0",
+    "bcryptjs": "^3.0.3",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.4.0",
+    "date-fns-tz": "^3.2.0",
+    "lucide-react": "^1.31.0",
     "next": "16.3.1",
+    "next-auth": "^5.0.0-beta.32",
+    "prisma": "^6.19.0",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -21,6 +36,8 @@
     "eslint": "^9",
     "eslint-config-next": "16.3.1",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "tsx": "^4.23.12",
+    "typescript": "^5",
+    "vitest": "^4.1.10"
   }
 }

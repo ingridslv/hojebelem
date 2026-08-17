@@ -1,0 +1,24 @@
+export const categories = [
+  ["Shows", "shows", "🎵"], ["Festas", "festas", "🎧"], ["Baladas", "baladas", "🪩"],
+  ["Música ao vivo", "musica-ao-vivo", "🎤"], ["Teatro", "teatro", "🎭"], ["Cinema", "cinema", "🎬"],
+  ["Exposições", "exposicoes", "🎨"], ["Arte e cultura", "arte-e-cultura", "🖼️"], ["Festivais", "festivais", "🎪"],
+  ["Bares", "bares", "🍻"], ["Gastronomia", "gastronomia", "🍽️"], ["Cafés", "cafes", "☕"],
+  ["Feiras e bazares", "feiras-e-bazares", "🛍️"], ["Eventos culturais", "eventos-culturais", "🧑‍🎨"],
+  ["Esportes", "esportes", "🏃"], ["Bem-estar", "bem-estar", "🧘"], ["Palestras", "palestras", "📚"],
+  ["Eventos acadêmicos", "eventos-academicos", "🎓"], ["Networking", "networking", "💼"], ["Tecnologia", "tecnologia", "💻"],
+  ["Games", "games", "🎮"], ["Família", "familia", "👨‍👩‍👧"], ["Infantil", "infantil", "🧒"],
+  ["Ao ar livre", "ao-ar-livre", "🌳"], ["Passeios", "passeios", "🏖️"], ["Compras", "compras", "🛍️"],
+  ["Religiosos", "religiosos", "⛪"], ["Comunitários", "comunitarios", "🤝"], ["Diversidade", "diversidade", "🏳️‍🌈"],
+  ["Stand-up/Comédia", "stand-up-comedia", "🎤"], ["Podcasts/Talks", "podcasts-talks", "🎙️"], ["Dança", "danca", "💃"],
+  ["Workshops", "workshops", "🎨"], ["Cursos e experiências", "cursos-e-experiencias", "🧑‍🍳"],
+] as const;
+
+const day = (offset: number, hour: number) => { const d = new Date(); d.setDate(d.getDate() + offset); d.setHours(hour, 0, 0, 0); return d; };
+export const demoEvents = [
+  { id:"1", slug:"festival-das-aguas", title:"Festival das Águas", description:"Música, arte e sabores amazônicos em uma noite especial à beira da baía. Uma celebração vibrante da cultura paraense com artistas locais e experiências gastronômicas.", coverImageUrl:"/images/hero-belem.png", startAt:day(0,19), venueName:"Estação das Docas", address:"Boulevard Castilhos França, Campina", price:35, externalPurchaseLink:"https://www.sympla.com.br/", socialLink:"https://www.instagram.com/", statusOverride:null, isFeatured:true, category:{name:"Festivais",slug:"festivais",icon:"🎪"}},
+  { id:"2", slug:"sons-do-para", title:"Sons do Pará", description:"Uma noite de música paraense contemporânea, encontros e muita energia no coração de Belém.", coverImageUrl:"https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1200&q=85", startAt:day(1,20), venueName:"Casa Apoena", address:"Av. Duque de Caxias, Marco", price:45, externalPurchaseLink:"https://www.sympla.com.br/", socialLink:"https://www.instagram.com/", statusOverride:null, isFeatured:true, category:{name:"Música ao vivo",slug:"musica-ao-vivo",icon:"🎤"}},
+  { id:"3", slug:"sabores-do-ver-o-peso", title:"Sabores do Ver-o-Peso", description:"Uma experiência guiada pelos ingredientes, aromas e histórias que fazem a gastronomia amazônica única.", coverImageUrl:"https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=1200&q=85", startAt:day(3,11), venueName:"Complexo Ver-o-Peso", address:"Boulevard Castilhos França, Cidade Velha", price:null, externalPurchaseLink:"https://wa.me/5591999999999", socialLink:"https://www.instagram.com/", statusOverride:null, isFeatured:false, category:{name:"Gastronomia",slug:"gastronomia",icon:"🍽️"}},
+  { id:"4", slug:"amazonia-em-cena", title:"Amazônia em Cena", description:"Espetáculo sensorial que mistura teatro, dança e narrativas amazônicas.", coverImageUrl:"https://images.unsplash.com/photo-1503095396549-807759245b35?auto=format&fit=crop&w=1200&q=85", startAt:day(5,19), venueName:"Theatro da Paz", address:"Praça da República, Campina", price:60, externalPurchaseLink:"https://www.sympla.com.br/", socialLink:"https://www.instagram.com/", statusOverride:null, isFeatured:true, category:{name:"Teatro",slug:"teatro",icon:"🎭"}},
+  { id:"5", slug:"feira-criativa-do-porto", title:"Feira Criativa do Porto", description:"Design autoral, artesanato, gastronomia e música em uma tarde para toda a família.", coverImageUrl:"https://images.unsplash.com/photo-1528698827591-e19ccd7bc23d?auto=format&fit=crop&w=1200&q=85", startAt:day(7,16), venueName:"Porto Futuro", address:"Reduto, Belém", price:null, externalPurchaseLink:"https://www.instagram.com/", socialLink:"https://www.instagram.com/", statusOverride:null, isFeatured:false, category:{name:"Feiras e bazares",slug:"feiras-e-bazares",icon:"🛍️"}},
+  { id:"6", slug:"meetup-tech-belem", title:"Meetup Tech Belém", description:"Conexões, produtos digitais e conversas práticas com quem constrói tecnologia na Amazônia.", coverImageUrl:"https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=1200&q=85", startAt:day(10,18), venueName:"Parque de Ciência e Tecnologia", address:"Av. Perimetral, Guamá", price:null, externalPurchaseLink:"https://www.sympla.com.br/", socialLink:"https://www.instagram.com/", statusOverride:null, isFeatured:false, category:{name:"Tecnologia",slug:"tecnologia",icon:"💻"}},
+];

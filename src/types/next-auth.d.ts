@@ -1,0 +1,1 @@
+import "next-auth"; declare module "next-auth" { interface User { role?: "USER"|"ADMIN"|"ORGANIZER" } interface Session { user:{id:string;role:"USER"|"ADMIN"|"ORGANIZER";name?:string|null;email?:string|null;image?:string|null} } } declare module "@auth/core/jwt" { interface JWT { role?:string } }
