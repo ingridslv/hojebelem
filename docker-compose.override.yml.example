@@ -1,0 +1,51 @@
+# Exemplo de docker-compose.override.yml
+# Copie para docker-compose.override.yml (sem versionar) e preencha
+# as credenciais locais. O override real fica apenas na sua VM.
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.local
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      AUTH_SECRET: ${AUTH_SECRET}
+      AUTH_TRUST_HOST: "true"
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+      - hojebelem_uploads_data:/app/public/uploads
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: hojebelem
+    ports:
+      - "5432:5432"
+    volumes:
+      - hojebelem_postgres_data:/var/lib/postgresql/data
+
+  collector:
+    build:
+      context: .
+      dockerfile: collector/Dockerfile.collector
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      COLLECTOR_MAX_PAGES: 3
+      COLLECTOR_MAX_DAYS_AHEAD: 120
+      SYMPLA_CITY_SLUG: belem
+      SYMPLA_BASE_URL: https://www.sympla.com.br
+    depends_on:
+      - postgres
+    restart: "no"
+
+volumes:
+  hojebelem_postgres_data:
+  hojebelem_uploads_data:
