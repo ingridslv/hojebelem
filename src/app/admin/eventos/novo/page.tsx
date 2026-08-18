@@ -1,2 +1,17 @@
-import { getCategories } from "@/lib/data"; import { createEventAction } from "@/app/actions";
-export default async function NewEvent(){const categories=await getCategories();return <div className="admin-page shell page-space"><div className="page-intro"><p>NOVO EVENTO</p><h1>Publique um rolê</h1><span>Preencha o essencial. Você poderá editar depois.</span></div><form className="event-form" action={createEventAction}><section><h2>Informações principais</h2><label>Título<input name="title" required placeholder="Nome do evento"/></label><label>Descrição<textarea name="description" rows={6} minLength={20} required placeholder="Conte o que torna este evento especial"/></label><label>Categorias<select name="category" required><option value="">Selecione</option>{categories.map(c=><option value={c.id} key={c.id}>{c.icon} {c.name}</option>)}</select></label></section><section><h2>Quando e onde</h2><div className="form-grid"><label>Data e hora<input type="datetime-local" name="startAt" required/></label><label>Fim (opcional)<input type="datetime-local" name="endAt"/></label></div><label>Local<input name="venueName" required placeholder="Nome do espaço"/></label><label>Endereço<input name="address" required placeholder="Rua, número e bairro"/></label></section><section><h2>Divulgação</h2><label>Imagem de capa<input type="file" accept="image/jpeg,image/png,image/webp"/></label><label>Link de compra ou reserva<input type="url" name="externalPurchaseLink" required placeholder="https://"/></label><div className="form-grid"><label>Preço<input type="number" name="price" min="0" step="0.01"/></label><label>Status<select name="status"><option>Automático</option><option>Adiado</option><option>Cancelado</option></select></label></div><div className="checks"><label><input type="checkbox" name="published"/> Publicar agora</label><label><input type="checkbox" name="featured"/> Marcar como destaque</label></div></section><button className="gradient-button" type="submit">Publicar evento</button></form></div>}
+import { createEventAction } from "@/app/actions";
+import { AdminEventForm } from "@/components/admin-event-form";
+import { getCategories } from "@/lib/data";
+
+export default async function NewEvent() {
+  const categories = await getCategories();
+  return (
+    <div className="admin-page shell page-space">
+      <div className="page-intro">
+        <p>NOVO EVENTO</p>
+        <h1>Publique um rolê</h1>
+        <span>Preencha o essencial. Você poderá editar depois.</span>
+      </div>
+      <AdminEventForm categories={categories} action={createEventAction} />
+    </div>
+  );
+}

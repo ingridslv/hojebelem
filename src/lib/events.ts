@@ -3,13 +3,23 @@ import { format, toZonedTime } from "date-fns-tz";
 export const TIMEZONE = "America/Belem";
 export type EventOverride = "CANCELLED" | "POSTPONED" | null;
 
-export function getEventStatus(event: { startAt: Date; statusOverride?: EventOverride }, now = new Date()) {
+export type EventTiming = { startAt: Date; endAt?: Date | null; statusOverride?: EventOverride };
+
+export function isEventEnded(event: EventTiming, now = new Date()) {
+  if (event.endAt) return event.endAt.getTime() <= now.getTime();
+  const eventDay = format(toZonedTime(event.startAt, TIMEZONE), "yyyy-MM-dd");
+  const today = format(toZonedTime(now, TIMEZONE), "yyyy-MM-dd");
+  return eventDay < today;
+}
+
+export function getEventStatus(event: EventTiming, now = new Date()) {
   if (event.statusOverride === "CANCELLED") return "Cancelado";
   if (event.statusOverride === "POSTPONED") return "Adiado";
+  if (isEventEnded(event, now)) return "Já encerrou";
   const eventDay = format(toZonedTime(event.startAt, TIMEZONE), "yyyy-MM-dd");
   const today = format(toZonedTime(now, TIMEZONE), "yyyy-MM-dd");
   const tomorrow = format(toZonedTime(new Date(now.getTime() + 86_400_000), TIMEZONE), "yyyy-MM-dd");
-  if (eventDay < today) return "Já encerrou";
+  if (eventDay < today) return "É Hoje";
   if (eventDay === today) return "É Hoje";
   if (eventDay === tomorrow) return "É amanhã";
   return "Em breve";
