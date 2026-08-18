@@ -67,6 +67,13 @@ model Event {
   externalPurchaseLink String
   socialLink           String?
   statusOverride       EventStatusOverride?
+  // ── Coletor automático: identificação externa ──
+  // externalId: ID do evento na plataforma de origem (ex: Sympla ID 3483046)
+  // source: qual plataforma veio (sympla, bilheteria_digital, manual, etc.)
+  // Usado para dedupe — impede que o mesmo evento seja inserido duas vezes
+  externalId           String?               @unique
+  source               String?               @default("manual")
+  // ──────────────────────────────────────────────
   isFeatured           Boolean              @default(false)
   isPublished          Boolean              @default(false)
   cityId               String

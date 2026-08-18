@@ -6,7 +6,7 @@ export type EventOverride = "CANCELLED" | "POSTPONED" | null;
 export type EventTiming = { startAt: Date; endAt?: Date | null; statusOverride?: EventOverride };
 
 export function isEventEnded(event: EventTiming, now = new Date()) {
-  if (event.endAt) return event.endAt.getTime() <= now.getTime();
+  // Evento encerrado se startAt ja passou (independente de endAt)
   const eventDay = format(toZonedTime(event.startAt, TIMEZONE), "yyyy-MM-dd");
   const today = format(toZonedTime(now, TIMEZONE), "yyyy-MM-dd");
   return eventDay < today;
