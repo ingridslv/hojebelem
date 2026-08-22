@@ -714,14 +714,15 @@ button {
   align-items: center;
   gap: 5px;
   margin: 0;
-  margin-top: auto;
 }
 .event-body > p svg {
   width: 13px;
+  height: 13px;
+  flex-shrink: 0;
 }
 .event-price {
   border-top: 1px solid var(--line);
-  margin-top: 14px;
+  margin-top: auto;
   padding-top: 12px;
   display: flex;
   justify-content: space-between;
@@ -1508,6 +1509,8 @@ button {
 }
 .detail-title svg {
   width: 17px;
+  height: 17px;
+  flex-shrink: 0;
 }
 .detail-layout {
   display: grid;
@@ -1529,6 +1532,8 @@ button {
 .detail-facts svg {
   color: var(--violet);
   width: 20px;
+  height: 20px;
+  flex-shrink: 0;
 }
 .detail-facts span {
   display: flex;

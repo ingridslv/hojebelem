@@ -17,12 +17,12 @@ export async function saveProfileImage(file: File) {
     throw new Error("A imagem deve ter no máximo 5 MB.");
   const filename = `avatar-${randomUUID()}.${extension}`;
   const uploadDirectory = path.join(
-    process.cwd(),
+    /* turbopackIgnore: true */ process.cwd(),
     process.env.UPLOAD_DIR ?? "public/uploads",
   );
   await mkdir(uploadDirectory, { recursive: true });
   await writeFile(
-    path.join(uploadDirectory, filename),
+    path.join(/* turbopackIgnore: true */ uploadDirectory, filename),
     Buffer.from(await file.arrayBuffer()),
   );
   return `/uploads/${filename}`;
