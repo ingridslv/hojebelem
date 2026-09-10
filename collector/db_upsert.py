@@ -2,47 +2,43 @@
 Upsert de eventos no banco PostgreSQL do hojebelem.
 
 Insere um novo evento ou atualiza se ja existir (dedupe por externalId).
-Usa SQL raw com psycopg2 — nao depende do Prisma client no Python.
-
-Nota: todo evento coletado de fontes externas TEM externalId (e o campo
-usado para dedupe). Nao ha caminho de insercao sem externalId — se
-externalId estiver ausente, o upsert falha cedo.
+Tambem relaciona o evento com sua categoria em EventCategory.
 """
 import psycopg2
 from psycopg2 import sql
 
 
 def upsert_event(db_url: str, event: dict) -> bool:
-    """Insere ou atualiza um evento no banco.
+    """Insere/atualiza um evento e relaciona sua categoria."""
 
-    Args:
-        db_url: string de conexao PostgreSQL
-        event: dict com os campos do schema Event. OBRIGATORIO: externalId
-               (usado para dedupe). Demais: title, slug, source, startAt,
-               venueName, address, externalPurchaseLink, coverImageUrl,
-               price, description, isPublished, cityId, createdById.
-
-    Returns:
-        True se upsert bem-sucedido, False se falhou ou externalId ausente
-    """
     if not event.get("externalId"):
         return False
+
+    conn = None
+    cur = None
+
     try:
         conn = psycopg2.connect(db_url)
         cur = conn.cursor()
+
+        # 1. Insere ou atualiza o evento.
         cur.execute(
             sql.SQL("""
-                INSERT INTO "Event" (id, title, slug, "externalId", source,
-                       "startAt", "endAt", "venueName", address,
-                       "externalPurchaseLink", "coverImageUrl", price,
-                       description, "isPublished", "cityId", "createdById",
-                       "createdAt", "updatedAt")
-                VALUES (gen_random_uuid(), %(title)s, %(slug)s,
-                        %(externalId)s, %(source)s,
-                        %(startAt)s, %(endAt)s, %(venueName)s, %(address)s,
-                        %(externalPurchaseLink)s, %(coverImageUrl)s,
-                        %(price)s, %(description)s, %(isPublished)s,
-                        %(cityId)s, %(createdById)s, NOW(), NOW())
+                INSERT INTO "Event" (
+                    id, title, slug, "externalId", source,
+                    "startAt", "endAt", "venueName", address,
+                    "externalPurchaseLink", "coverImageUrl", price,
+                    description, "isPublished", "cityId", "createdById",
+                    "createdAt", "updatedAt"
+                )
+                VALUES (
+                    gen_random_uuid(), %(title)s, %(slug)s,
+                    %(externalId)s, %(source)s,
+                    %(startAt)s, %(endAt)s, %(venueName)s, %(address)s,
+                    %(externalPurchaseLink)s, %(coverImageUrl)s,
+                    %(price)s, %(description)s, %(isPublished)s,
+                    %(cityId)s, %(createdById)s, NOW(), NOW()
+                )
                 ON CONFLICT ("externalId") DO UPDATE SET
                     title = EXCLUDED.title,
                     slug = EXCLUDED.slug,
@@ -54,13 +50,64 @@ def upsert_event(db_url: str, event: dict) -> bool:
                     "coverImageUrl" = EXCLUDED."coverImageUrl",
                     price = EXCLUDED.price,
                     description = EXCLUDED.description,
+                    "isPublished" = EXCLUDED."isPublished",
                     "updatedAt" = NOW()
+                RETURNING id
             """),
             event,
         )
+
+        event_id = cur.fetchone()[0]
+
+        # 2. Busca a categoria pelo nome.
+        category_name = event.get("categoryName")
+
+        if category_name:
+            cur.execute(
+                """
+                SELECT id
+                FROM "Category"
+                WHERE LOWER(name) = LOWER(%s)
+                LIMIT 1
+                """,
+                (category_name,),
+            )
+
+            category_row = cur.fetchone()
+
+            if category_row:
+                category_id = category_row[0]
+
+                # 3. Remove categorias anteriores deste evento.
+                cur.execute(
+                    """
+                    DELETE FROM "EventCategory"
+                    WHERE "eventId" = %s
+                    """,
+                    (event_id,),
+                )
+
+                # 4. Relaciona o evento com a nova categoria.
+                cur.execute(
+                    """
+                    INSERT INTO "EventCategory" ("eventId", "categoryId")
+                    VALUES (%s, %s)
+                    ON CONFLICT ("eventId", "categoryId") DO NOTHING
+                    """,
+                    (event_id, category_id),
+                )
+
         conn.commit()
-        cur.close()
-        conn.close()
+
         return True
+
     except Exception:
+        if conn:
+            conn.rollback()
         return False
+
+    finally:
+        if cur:
+            cur.close()
+        if conn:
+            conn.close()

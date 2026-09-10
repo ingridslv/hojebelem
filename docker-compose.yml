@@ -12,6 +12,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+
   app:
     build: .
     ports: ["3000:3000"]
@@ -22,5 +23,20 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+
+  collector:
+    build:
+      context: .
+      dockerfile: collector/Dockerfile.collector
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/hojebelem
+      SYMPLA_BASE_URL: https://www.sympla.com.br/eventos/belem-pa
+      COLLECTOR_MAX_PAGES: 5
+      COLLECTOR_MAX_DAYS_AHEAD: 120
+      COLLECTOR_AUTO_PUBLISH: "true"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
   postgres_data:

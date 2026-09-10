@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminEvents() {
   const events = await prisma.event.findMany({
     include: { categories: { include: { category: true } } },
